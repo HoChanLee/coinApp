@@ -23,9 +23,15 @@ const Coin = styled.li`
     border-radius: 15px;
     margin-bottom: 10px;
     a {
+        display: flex;
+        align-items: center;
         padding: 20px;
         transition: color 0.2s ease-in;
-        display: block;
+    }
+    img {
+        width: 25px;
+        height: 25px;
+        margin-right: 10px;
     }
     &:hover{
         a{
@@ -62,7 +68,7 @@ function Coins() {
             const response = await fetch("https://api.coinpaprika.com/v1/coins");
             const json = await response.json();
             setCoin(json.slice(0, 100));
-            //setLoading(false);
+            setLoading(false);
         })();
     })
     return(
@@ -76,7 +82,10 @@ function Coins() {
                 <CoinsList>
                     {coins.map(coin => (
                         <Coin key={coin.id}>
-                            <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+                            <Link to={`/${coin.id}`} state={{name: coin.name}}>
+                                <img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}></img>
+                                {coin.name} &rarr;
+                            </Link>
                         </Coin>
                     ))}
                 </CoinsList>
