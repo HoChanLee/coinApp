@@ -25,7 +25,7 @@ function Chart({coinId}: ChartProps){
             refetchInterval: 5000,
         }
     )
-    console.log(data)
+    console.log(data?.map((candle) => [Number(candle.time_close), Number(candle.open), Number(candle.high), Number(candle.low), Number(candle.close)]))
     return(
         <div>
             {isLoading ? (
@@ -33,11 +33,14 @@ function Chart({coinId}: ChartProps){
             ) : (
                 <ApexChart 
                     
-                    type="line" 
+                    //type="candlestick" 
                     series={[
                         {
-                            name: "Price",
-                            data: data?.map((price) => Number(price.close)) as number[],
+                            name: "Candle",
+                            data: data?.map((candle) => Number([{
+                                x: new Date(Number(candle.time_close)),
+                                y: [Number(candle.open), Number(candle.high), Number(candle.low), Number(candle.close)]
+                            }])) as number[],
                         }
                     ]}
                     options={{
@@ -51,32 +54,41 @@ function Chart({coinId}: ChartProps){
                                 show: false,
                             },
                             background: "transparent",
+                            type: 'candlestick',
                         },
-                        stroke: {
-                            curve: "smooth",
-                            width: 3,
+                        plotOptions: {
+                            candlestick: {
+                                colors: {
+                                    upward: '#3C90EB',
+                                    downward: '#DF7D46'
+                                },
+                                wick: {
+                                    useFillColor: true,
+                                }
+                            }
                         },
                         grid: {
                             show: false,
                         },
                         xaxis: {
-                            labels: {show: false,datetimeFormatter: {day: 'dd MMM',} },
+                            labels: {show: true,
+                                datetimeFormatter: {day: 'dd MMM',} 
+                            },
                             axisTicks: {show: false,},
                             type: "datetime",
                             categories: data?.map((price) => Number(price.time_close)) as number[],
                         },
-                        fill: {
-                            type: 'gradient',
-                            gradient: {
-                                gradientToColors: ["#0be881"]
-                            },
-                            colors: ["#0fbcf9"],
-                        },
-                        tooltip: {
-                            y: {
-                                formatter: (value) => `$ ${value.toFixed(2)}`
+                        yaxis: {
+                            tooltip: {
+                              enabled: true
                             }
-                        },
+                          },
+                        
+                        // tooltip: {
+                        //     y: {
+                        //         formatter: (value) => `$ ${value.toFixed(2)}`
+                        //     }
+                        // },
                     }} 
                 />
             )}

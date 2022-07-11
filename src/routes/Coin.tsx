@@ -88,6 +88,14 @@ const Tab = styled.span<{isActive: boolean}>`
   }
 `;
 
+const Back = styled.span`
+  display: inline-block;
+  margin: 10px 0;
+  padding: 5px 10px;
+  background-color: #333;
+  border-radius: 10px;
+`;
+
 interface RouteParams{
     coinId: string;
 }
@@ -173,6 +181,7 @@ function Coin() {
             <Helmet>
                 <title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</title>
             </Helmet>
+            <Back><Link to="/">&larr; Back</Link></Back>
             <Header>
                 <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
             </Header>
