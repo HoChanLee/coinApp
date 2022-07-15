@@ -25,7 +25,6 @@ const Header = styled.header`
 const Title = styled.h1`
     font-size: 48px;
     color: ${(props) => props.theme.accentColor};
-    margin-top: 40px;
 `;
 
 const Loader = styled.span`
@@ -36,7 +35,7 @@ const Loader = styled.span`
 const CoinInfo = styled.div`
     display: flex;
     flex-direction: column;
-    margin-top: 60px;
+    margin-top: 20px;
 `;
 
 const CoinBox = styled.div`
@@ -45,7 +44,7 @@ const CoinBox = styled.div`
     align-items: center;
     width: 100%;
     text-align: center;
-    background-color: #333;
+    background-color: ${(props) => props.theme.textColor};
     padding: 20px 20px;
     border-radius: 15px;
 `;
@@ -61,10 +60,12 @@ const List = styled.div``;
 const ListName = styled.p`
     font-size: 16px;
     margin-bottom: 10px;
+    color: ${(props) => props.theme.bgColor};
 `;
 
 const ListValue = styled.p`
     font-size: 20px;
+    color: ${(props) => props.theme.bgColor};
 `;
 
 const Tabs = styled.div`
@@ -79,10 +80,10 @@ const Tab = styled.span<{isActive: boolean}>`
   text-transform: uppercase;
   font-size: 16px;
   font-weight: 400;
-  background-color: #333;
-  padding: 7px 0px;
-  border-radius: 10px;
-  color: ${(props) => props.isActive ? props.theme.accentColor : props.theme.textColor};
+  background-color: ${(props) => props.theme.textColor};
+  padding: 10px 0px;
+  border-radius: 15px;
+  color: ${(props) => props.isActive ? props.theme.accentColor : props.theme.bgColor};
   a {
     display: block;
   }
@@ -92,8 +93,9 @@ const Back = styled.span`
   display: inline-block;
   margin: 10px 0;
   padding: 5px 10px;
-  background-color: #333;
+  background-color: ${(props) => props.theme.textColor};
   border-radius: 10px;
+  color: ${(props) => props.theme.bgColor};
 `;
 
 interface RouteParams{
@@ -162,7 +164,11 @@ interface PriceData{
     };
 }
 
-function Coin() {
+interface ICoinsProps{
+    
+}
+
+function Coin({}: ICoinsProps) {
     const {coinId} = useParams<keyof RouteParams>() as RouteParams;
     const { state } = useLocation() as RouteState;
     const priceMatch = useMatch("/:coinId/price");
@@ -227,11 +233,11 @@ function Coin() {
                             <Link to={`/${coinId}/chart`}>Chart</Link>
                         </Tab>
                         <Tab isActive={priceMatch !== null}>
-                            <Link to={`/${coinId}/price`}>Price</Link>
+                            <Link to={`/${coinId}/price`}>Price info</Link>
                         </Tab>
                     </Tabs>
                     <Routes>
-                        <Route path="price" element={<Price />} />
+                        <Route path="price" element={<Price coinId={coinId} />} />
                         <Route path="chart" element={<Chart coinId={coinId} />} />
                     </Routes>
                 </>

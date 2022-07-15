@@ -1,5 +1,10 @@
-import { createGlobalStyle } from "styled-components";
+import { useState } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { isDarkAtom } from "./atoms";
 import Router from "./Router";
+import ToggleMode from "./routes/ToggleMode";
+import { darkTheme, lighTheme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
@@ -65,10 +70,14 @@ a{
 `
 
 function App() {
+  const isDark = useRecoilValue(isDarkAtom);
   return (
       <>
-        <GlobalStyle></GlobalStyle>
-        <Router></Router>
+        <ThemeProvider theme={isDark ? darkTheme : lighTheme}>
+          <GlobalStyle></GlobalStyle>
+          <ToggleMode></ToggleMode>
+          <Router></Router>
+        </ThemeProvider>
       </>
   );
 }

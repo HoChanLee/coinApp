@@ -1,6 +1,8 @@
 import { useQuery } from "react-query";
 import { fetchCoinHistory } from "./api";
 import ApexChart from "react-apexcharts"
+import { isDarkAtom } from "../atoms";
+import { useRecoilValue } from "recoil";
 
 interface Ihistorical {
     close: string;
@@ -18,34 +20,34 @@ interface ChartProps {
 }
 
 function Chart({coinId}: ChartProps){
+    const isDark = useRecoilValue(isDarkAtom);
     const {isLoading, data} = useQuery<Ihistorical[]>(
         ["ohlcv", coinId], 
         () => fetchCoinHistory(coinId), 
         {
-            refetchInterval: 5000,
+            refetchInterval: 2500,
         }
     )
-    console.log(data?.map((candle) => [Number(candle.time_close), Number(candle.open), Number(candle.high), Number(candle.low), Number(candle.close)]))
     return(
         <div>
             {isLoading ? (
                 "Loading chart..."
             ) : (
                 <ApexChart 
-                    
-                    //type="candlestick" 
+                    type="candlestick" 
                     series={[
                         {
-                            name: "Candle",
-                            data: data?.map((candle) => Number([{
-                                x: new Date(Number(candle.time_close)),
-                                y: [Number(candle.open), Number(candle.high), Number(candle.low), Number(candle.close)]
-                            }])) as number[],
-                        }
-                    ]}
+                            data: data?.map((price) => {
+                                return{
+                                    x: price.time_close,
+                                    y: [price.open, price.high, price.low, price.close]
+                                }
+                            })
+                        },
+                    ] as any}
                     options={{
                         theme: {
-                            mode: 'dark', 
+                            mode: isDark ? 'dark' : 'light', 
                         },
                         chart: {
                             height: 400,
@@ -72,7 +74,7 @@ function Chart({coinId}: ChartProps){
                         },
                         xaxis: {
                             labels: {show: true,
-                                datetimeFormatter: {day: 'dd MMM',} 
+                                datetimeFormatter: {month: "mmm 'yy",} 
                             },
                             axisTicks: {show: false,},
                             type: "datetime",

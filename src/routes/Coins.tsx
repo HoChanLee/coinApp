@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "./api";
 import {Helmet} from "react-helmet";
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 const Container = styled.div`
     padding: 0px 20px;
-    max-width: 480px;
+    max-width: 600px;
     margin: 0 auto;
 `;
 
@@ -21,7 +22,7 @@ const Header = styled.header`
 const CoinsList = styled.ul``;
 
 const Coin = styled.li`
-    background-color: white;
+    background-color: ${(props) => props.theme.textColor};
     color: ${(props) => props.theme.bgColor};
     border-radius: 15px;
     margin-bottom: 10px;
@@ -62,18 +63,11 @@ interface ICoin {
     "type": string,
 }
 
-function Coins() {
-    const {isLoading,data} = useQuery<ICoin[]>("allCoins", fetchCoins)
-    // const [coins, setCoin] = useState<ICoin[]>([]);
-    // const [loading, setLoading] = useState(true);
-    // useEffect(() => {
-    //     (async() => {
-    //         const response = await fetch("https://api.coinpaprika.com/v1/coins");
-    //         const json = await response.json();
-    //         setCoin(json.slice(0, 100));
-    //         //setLoading(false);
-    //     })();
-    // })
+interface ICoinsProps {
+}
+
+function Coins({}: ICoinsProps) {
+    const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins)
     return(
         <Container>
             <Helmet>
@@ -88,7 +82,7 @@ function Coins() {
                 <CoinsList>
                     {data?.slice(0, 100).map(coin => (
                         <Coin key={coin.id}>
-                            <Link to={`/${coin.id}`}>
+                            <Link to={`/${coin.id}/chart`}>
                                 <Img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}/>
                                 {coin.name} &rarr;
                             </Link>
